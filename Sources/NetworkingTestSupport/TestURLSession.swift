@@ -41,7 +41,7 @@ public struct URLResponseStub {
 public struct TestURLSessionConfiguration {
     public let matchingConfig: [URLMatch: URLResponseStub]
 
-    init(config: [URLMatch: URLResponseStub]) {
+    public init(config: [URLMatch: URLResponseStub]) {
         matchingConfig = config
     }
 
