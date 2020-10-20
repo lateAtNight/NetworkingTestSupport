@@ -5,10 +5,10 @@ import os.log
 public struct URLMatch {
     public let host: String
     public let path: String
-    public  let query: [URLQueryItem]?
-    public  let method: HTTP.Method
+    public let query: [URLQueryItem]?
+    public let method: HTTP.Method
 
-    init(method: HTTP.Method, host: String, path: String, query: [URLQueryItem]?) {
+   public init(method: HTTP.Method, host: String, path: String, query: [URLQueryItem]?) {
         self.host = host
         self.path = path
         self.query = query
