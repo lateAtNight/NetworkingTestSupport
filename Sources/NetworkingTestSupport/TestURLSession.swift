@@ -105,7 +105,7 @@ public struct TestURLSessionConfiguration {
         for (key, value) in matchingConfig where
             key.method.name == method &&
             key.host == components.host &&
-            key.path ~= components.path &&
+            components.path ~= key.path &&
             key.query?.count == components.queryItems?.count {
 
             var fullMatch = true
