@@ -105,7 +105,7 @@ public struct TestURLSessionConfiguration {
         for (key, value) in matchingConfig where
             key.method.name == method &&
             key.host == components.host &&
-            key.path == components.path &&
+            components.path ~= key.path &&
             key.query?.count == components.queryItems?.count {
 
             var fullMatch = true
@@ -347,5 +347,13 @@ extension HTTP.Method {
         case .trace:
             return "TRACE"
         }
+    }
+}
+
+private extension String {
+    static func ~= (lhs: String, rhs: String) -> Bool {
+        guard let regex = try? NSRegularExpression(pattern: rhs) else { return false }
+        let range = NSRange(location: 0, length: lhs.utf16.count)
+        return regex.firstMatch(in: lhs, options: [], range: range) != nil
     }
 }
