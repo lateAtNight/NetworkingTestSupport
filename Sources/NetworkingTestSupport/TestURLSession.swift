@@ -29,7 +29,7 @@ public struct URLResponseStub {
         }
     }
 
-    init(statusCode: Int,
+    public init(statusCode: Int,
          headers: [String: String]?,
          payloadFileNames: [String] = []) {
         self.statusCode = statusCode
