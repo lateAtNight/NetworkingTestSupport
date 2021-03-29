@@ -221,12 +221,14 @@ extension URLMatch: Hashable {
     public func hash(into hasher: inout Hasher) {
         hasher.combine(host)
         hasher.combine(path)
+        hasher.combine(method)
     }
 
     public static func == (lhs: URLMatch, rhs: URLMatch) -> Bool {
         return lhs.host == rhs.host &&
             lhs.path == rhs.path &&
-            lhs.query == rhs.query
+            lhs.query == rhs.query &&
+            lhs.method == rhs.method
     }
 }
 
