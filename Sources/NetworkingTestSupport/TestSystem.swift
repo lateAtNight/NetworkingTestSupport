@@ -7,12 +7,12 @@ public enum TestSystem {
     public static var testURLSession: URLSession?
 
     // Call `begin` at the start of `applicationDidFinishLoading` to initialise test support
-    public static func begin() {
+    public static func begin(bundle: Bundle = .main) {
         let env = ProcessInfo.processInfo.environment
 
         if let testURLStubSetting = env[TestEnvironment.SessionConfig.key] {
             let config = TestURLSessionConfiguration(environmentVariable: testURLStubSetting)
-            testURLSession = TestURLSession(testMapping: config)
+            testURLSession = TestURLSession(testMapping: config, bundle: bundle)
         }
 
         if let testReferenceDateSetting = env[TestEnvironment.Date.key] {

@@ -17,8 +17,8 @@ public struct URLMatch {
 }
 
 public struct URLResponseStub {
-    public  let statusCode: Int
-    public  let headers: [String: String]?
+    public let statusCode: Int
+    public let headers: [String: String]?
     public let payloadFileNames: [String]
 
     public init(statusCode: Int, headers: [String: String]?, payloadFileName: String?) {
@@ -142,6 +142,8 @@ final class StubURLSessionDataTask: URLSessionDataTask {
     let responseStub: URLResponseStub
     let handler: (Data?, URLResponse?, Error?) -> Void
     let callNumber: Int
+    let bundle: Bundle
+
     private let stubURLResponse: URLResponse
 
     override var response: URLResponse? {
@@ -151,7 +153,8 @@ final class StubURLSessionDataTask: URLSessionDataTask {
     init(url: URL,
          callNumber: Int,
          response responseStub: URLResponseStub,
-         handler: @escaping (Data?, URLResponse?, Error?) -> Void) {
+         handler: @escaping (Data?, URLResponse?, Error?) -> Void,
+         bundle: Bundle) {
         self.responseStub = responseStub
         self.handler = handler
         self.callNumber = callNumber
@@ -159,12 +162,13 @@ final class StubURLSessionDataTask: URLSessionDataTask {
                                                statusCode: responseStub.statusCode,
                                                httpVersion: "1.1",
                                                headerFields: responseStub.headers)!
+        self.bundle = bundle
     }
 
     private func dataFor(payloadFileName: String) -> Data? {
         let parts = payloadFileName.split(separator: ".")
 
-        guard let url = Bundle.main.url(forResource: String(parts[0]),
+        guard let url = bundle.url(forResource: String(parts[0]),
                                         withExtension: String(parts[1])) else {
             let message = "Invalid path for test payload file '\(payloadFileName)'"
             #if os(iOS)
@@ -194,9 +198,11 @@ final class TestURLSession: URLSession {
 
     private let testMapping: TestURLSessionConfiguration
     private var callCount: [URL: Int] = [:]
+    private let bundle: Bundle
 
-    init(testMapping: TestURLSessionConfiguration) {
+    init(testMapping: TestURLSessionConfiguration, bundle: Bundle = Bundle.main) {
         self.testMapping = testMapping
+        self.bundle = bundle
     }
 
     override func getAllTasks(completionHandler: @escaping ([URLSessionTask]) -> Void) {
@@ -211,7 +217,8 @@ final class TestURLSession: URLSession {
         let task = StubURLSessionDataTask(url: url,
                                           callNumber: callNumber,
                                           response: stubResponse,
-                                          handler: completionHandler)
+                                          handler: completionHandler,
+                                          bundle: bundle)
         callCount[url] = callNumber + 1
         return task
     }
